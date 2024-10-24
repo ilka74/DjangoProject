@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Подтверждение удаления объявления</h2>
+  <p>Вы уверены, что хотите удалить следующее объявление?</p>
+
+  <h3>{{ advertisement.title }}</h3>
+  <p>{{ advertisement.description }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Удалить</button>
+    <a href="{% url 'board:advertisement_list' %}">Отмена</a>
+  </form>
+{% endblock %}
