@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from board import views as board_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,3 +28,11 @@ urlpatterns = [
     path('', board_views.home, name='home'),
     path('signup/', board_views.signup, name='signup'),
 ]
+
+"""
+Опция для обслуживания Django медиафайлов. Работает только в режиме отладки (DEBUG = True). 
+"""
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
