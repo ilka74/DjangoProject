@@ -2,6 +2,7 @@
 
 {% block content %}
   <h2>Edit Advertisement</h2>
+  <p><strong>Автор:</strong>{{ advertisement.author.username }} </p>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}

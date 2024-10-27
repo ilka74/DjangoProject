@@ -6,6 +6,7 @@
 
   <h3>{{ advertisement.title }}</h3>
   <p>{{ advertisement.description }}</p>
+  <p><strong>Автор:</strong>{{ advertisement.author.username }} </p>
 
   <form method="post">
     {% csrf_token %}
