@@ -12,4 +12,6 @@ urlpatterns = [
     path('add/', views.add_advertisement, name='add_advertisement'),
     path('advertisement/<int:pk>/edit/', views.edit_advertisement, name='edit_advertisement'),
     path('advertisement/<int:pk>/delete/', views.delete_advertisement, name='delete_advertisement'),
+    path('advertisement/<int:pk>/like/', views.like_advertisement, name='like_advertisement'),
+    parh('advertisement/<int:pk>/dislike/', views.dislike_advertisement, name='dislike_advertisement'),
 ]

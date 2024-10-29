@@ -12,13 +12,17 @@ class Advertisement(models.Model):
         что если пользователь удален, то связанные с ним рекламные объявления также удаляются;
     created_at: автоматически устанавливает текущую дату и время при создании объявления;
     image: поле для загрузки изображений, не обязательное. Если изображение не загружено, поле может быть пустым.
-        upload_to='advertisements/' определяет индикатор, в котором сохраняются загружаемые изображения.
+        upload_to='advertisements/' определяет индикатор, в котором сохраняются загружаемые изображения;
+    likes: поле для подсчета лайков, по умолчанию принимает нулевое значение;
+    dislikes: поле для подсчета дизлайков, по умолчанию принимает нулевое значение.
     """
     title = models.CharField(max_length=255)
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='advertisements/', blank=True, null=True)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
 
     def __str__(self):
         """

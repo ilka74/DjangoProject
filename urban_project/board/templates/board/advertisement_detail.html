@@ -4,4 +4,19 @@
 <h1>{{ advertisement.title }}</h1>
 <p>{{ advertisement.content }}</p>
 <p><strong>Автор:</strong>{{ advertisement.author.username }} </p>
+<p><strong>Лайки:</strong>{{ advertisement.likes }} </p>
+<p><strong>Дизлайки:</strong>{{ advertisement.dislikes }} </p>
+
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'board:like_advertisement' pk=advertisement.pk %}">
+        {% csrf_token %}
+        <button type="submit">Лайк</button>
+    </form>
+    <form method="post" action="{% url 'board:dislike_advertisement' pk=advertisement.pk %}">
+        {% csrf_token %}
+        <button type="submit">Дизлайк</button>
+    </form>
+{% endif %}
+
+<a href="{% url 'board:advertisement_list' %}">Назад к списку</a>
 {% endblock %}

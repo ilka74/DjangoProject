@@ -10,8 +10,9 @@
     <li>
       <a href="{% url 'board:advertisement_detail' pk=advertisement.pk %}">{{ advertisement.title }}</a>
       <p><strong>Автор:</strong>{{ advertisement.author.username }} </p>
+      <p>Лайки: {{ advertisement.likes }} | Дизлайки: {{ advertisement.dislikes }}</p>
     </li>
   {% endfor %}
 </ul>
-
 {% endblock %}
+
