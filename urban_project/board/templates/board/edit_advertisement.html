@@ -5,7 +5,9 @@
   <p><strong>Автор:</strong>{{ advertisement.author.username }} </p>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.title.label }} {{ form.title }}<br>
+    {{ form.content.label }} {{ form.content }}<br>
+    {{ form.image.label }} {{ form.image }}<br>
     <button type="submit">Save changes</button>
   </form>
 {% endblock %}

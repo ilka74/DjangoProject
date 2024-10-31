@@ -4,7 +4,12 @@
   <h2>Add Advertisement</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.title.label }} {{ form.title }}<br>
+    {{ form.content.label }} {{ form.content }}<br>
+    {{ form.image.label }} {{ form.image }}<br>
+
+    <p><strong>Автор:</strong> {{ request.user.username }}</p>
+
     <button type="submit">Submit</button>
   </form>
 {% endblock %}

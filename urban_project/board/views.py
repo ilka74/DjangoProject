@@ -87,9 +87,10 @@ def add_advertisement(request):
     Функция позволяет добавлять новое объявление. Если метод запроса - "POST", то он обрабатывает отправленную форму.
     Если форма действительна, она связывает рекламу с текущим пользователем и сохраняет ее.
     После сохранения перенаправляет на список объявлений. Если метод запроса — "GET", то отображается пустая форма.
+    Параметр request.FILES необходим для корректной обработки файлов, загружаемых через форму (например, изображений)
     """
     if request.method == "POST":
-        form = AdvertisementForm(request.POST)
+        form = AdvertisementForm(request.POST, request.FILES)
         if form.is_valid():
             advertisement = form.save(commit=False)
             advertisement.author = request.user
@@ -117,14 +118,14 @@ def edit_advertisement(request, pk):
         return redirect('board:advertisement_list')
 
     if request.method == 'POST':
-        form = AdvertisementForm(request.POST, instance=advertisement)
+        form = AdvertisementForm(request.POST, request.FILES, instance=advertisement)
         if form.is_valid():
             form.save()
             return redirect('board:advertisement_detail', pk=advertisement.pk)
     else:
         form = AdvertisementForm(instance=advertisement)
 
-    return render(request, 'board/edit_advertisement.html', {'form': form})
+    return render(request, 'board/edit_advertisement.html', {'form': form, 'advertisement': advertisement})
 
 
 @login_required

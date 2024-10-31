@@ -8,6 +8,9 @@ class AdvertisementForm(forms.ModelForm):
     class Meta:
         model = Advertisement
         fields = ['title', 'content', 'author', 'image']
+        widgets = {
+            'author': forms.HiddenInput(),  # Скрываем поле автора
+        }
 
 
 class SignUpForm(UserCreationForm):
