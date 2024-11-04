@@ -14,7 +14,7 @@
 Если объект не найден, автоматически выдается ошибка 404 (применяется для упрощения кода).
 """
 from django.shortcuts import render, redirect, get_object_or_404
-from board.models import Advertisement
+from .models import Advertisement, UserProfile
 from board.forms import AdvertisementForm, SignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
@@ -38,16 +38,19 @@ def signup(request):
     Функция для управления регистрацией пользователей. Если метод запроса — POST, он обрабатывает отправленную форму.
     Если форма действительна, она сохраняет пользователя, авторизует его и перенаправляет на страницу объявлений.
     Если метод запроса — GET, отображается пустая форма регистрации
+    UserProfile.objects.create(user=user) - создает профиль пользователя
+    return render - возвращает страницу регистрации с формой
     """
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            UserProfile.objects.create(user=user)
             login(request, user)
             return redirect('/board')
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form}) # возвращает страницу регистрации с формой
+    return render(request, 'signup.html', {'form': form})
 
 
 def home(request):
@@ -64,7 +67,8 @@ def advertisement_list(request):
     Функция для отображения списка всех рекламных объявлений.
     Она получает все данные из модели Advertisement.
     Возвращает HTML-страницу advertisement_list.html с контекстом, содержащим все объявления.
-    Контекст передается как словарь, где ключ — advertisements, а значение — список объявлений.
+    Контекст передается как словарь, где ключ — advertisements, а значение — список объявлений;
+    user_profiles - словарь профилей пользователей.
     """
     advertisements = Advertisement.objects.all()
     return render(request, 'board/advertisement_list.html', {'advertisements': advertisements})
@@ -76,6 +80,7 @@ def advertisement_detail(request, pk):
     Она показывает детали конкретного объявления по его первичному ключу (pk): извлекает одно объявление
     с указанным первичным ключом. Если объявление с таким ключом не найдено, будет вызвано исключение DoesNotExist.
     Возвращает HTML-страницу advertisement_detail.html с контекстом, содержащим детали конкретного объявления
+    user_profile: профиль автора объявления. Сначала получаем его из словаря, затем функция его возвращает.
     """
     advertisement = Advertisement.objects.get(pk=pk)
     return render(request, 'board/advertisement_detail.html', {'advertisement': advertisement})
@@ -165,11 +170,17 @@ def like_advertisement(request, pk):
     Если объявление не найдено, будет возвращена ошибка 404.
     - request: объект запроса, содержащий информацию о текущем запросе пользователя;
     - pk: первичный ключ объявления, к которому добавляется лайк;
-    - redirect: перенаправляет пользователя на страницу деталей объявления.
+    - redirect: перенаправляет пользователя на страницу деталей объявления;
+    - блок profile: обновление статистики пользователя.
     """
     advertisement = get_object_or_404(Advertisement, pk=pk)
     advertisement.likes += 1
     advertisement.save()
+
+    profile = UserProfile.objects.get(user=advertisement.author)
+    profile.total_likes += 1
+    profile.save()
+
     return redirect('board:advertisement_detail', pk=pk)
 
 
@@ -182,9 +193,15 @@ def dislike_advertisement(request, pk):
     Если объявление не найдено, будет возвращена ошибка 404.
     - request: объект запроса, содержащий информацию о текущем запросе пользователя;
     - pk: первичный ключ объявления, к которому добавляется дизлайк;
-    - redirect: перенаправляет пользователя на страницу деталей объявления.
+    - redirect: перенаправляет пользователя на страницу деталей объявления;
+    - блок profile: обновление статистики пользователя.
     """
     advertisement = get_object_or_404(Advertisement, pk=pk)
     advertisement.dislikes += 1
     advertisement.save()
+
+    profile = UserProfile.objects.get(user=advertisement.author)
+    profile.total_dislikes += 1
+    profile.save()
+
     return redirect('board:advertisement_detail', pk=pk)

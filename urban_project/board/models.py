@@ -51,3 +51,16 @@ class Comment(models.Model):
         включая автора и связанную с ним рекламу.
         """
         return f'Comment by {self.author} on {self.advertisement}'
+
+
+class UserProfile(models.Model):
+    """
+    Модель профиля пользователя для хранения статистики.
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    advertisements_count = models.IntegerField(default=0)
+    total_likes = models.IntegerField(default=0)
+    total_dislikes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'Profile of {self.user.username}'
