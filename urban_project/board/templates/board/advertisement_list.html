@@ -6,7 +6,7 @@
     <a href="{% url 'board:add_advertisement' %}"><button>Add Advertisement</button></a>
 {% endif %}
 <ul>
-  {% for advertisement in advertisements %}
+  {% for advertisement in page_obj %}
     <li>
       <a href="{% url 'board:advertisement_detail' pk=advertisement.pk %}">{{ advertisement.title }}</a>
       <p><strong>Автор:</strong>{{ advertisement.author.username }} </p>
@@ -14,5 +14,24 @@
     </li>
   {% endfor %}
 </ul>
-{% endblock %}
 
+<!-- Пагинация -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

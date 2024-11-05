@@ -12,12 +12,14 @@
 - функции для обработки аутентификации пользователей
 - вспомогательной функция, которая используется для получения запроса из базы данных.
 Если объект не найден, автоматически выдается ошибка 404 (применяется для упрощения кода).
+- импортируем пагинатор для ограничения количества объявлений на одной странице
 """
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Advertisement, UserProfile
 from board.forms import AdvertisementForm, SignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
+from django.core.paginator import Paginator
 
 
 def logout_view(request):
@@ -69,9 +71,20 @@ def advertisement_list(request):
     Возвращает HTML-страницу advertisement_list.html с контекстом, содержащим все объявления.
     Контекст передается как словарь, где ключ — advertisements, а значение — список объявлений;
     user_profiles - словарь профилей пользователей.
+    Настройка пагинации:
+    paginator - создаем экземпляр Paginator, который разбивает список объявлений на страницы, показывая по 10
+    объявлений на каждой странице;
+    page_number - извлекаем номер страницы из параметров запроса GET;
+    page_obj - получаем объект, представляющий текущую страницу. Передаем его в шаблон.
     """
     advertisements = Advertisement.objects.all()
-    return render(request, 'board/advertisement_list.html', {'advertisements': advertisements})
+
+    # Настройка пагинации
+    paginator = Paginator(advertisements, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'board/advertisement_list.html', {'page_obj': page_obj})
 
 
 def advertisement_detail(request, pk):
